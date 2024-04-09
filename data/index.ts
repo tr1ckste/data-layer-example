@@ -1,6 +1,5 @@
 import { Pool, types } from 'pg';
-import { ActorDb } from './ActorDb'
-import { Actor } from './pg/Actor';
+import { ActorData } from './store/ActorData';
 
 const connectionString = 'postgres://postgres:postgres@127.0.0.1:5432/dvdrental';
 
@@ -14,4 +13,4 @@ types.setTypeParser(NUMERIC_OID, (val) =>
   parseFloat(val)
 );
 
-export const actor: ActorDb = new Actor(pool);
+export const actorData = new ActorData(pool);

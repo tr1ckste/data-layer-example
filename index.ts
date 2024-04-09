@@ -1,21 +1,15 @@
-import { actor } from './db';
+import { actorData } from './data';
 
 (async () => {
-  const actors = await actor.findByYearAndLastName(
+  const actors = await actorData.findByYearAndLastName(
     2006,
     'Goldberg');
 
   console.log(actors);
 
-  let count: number;
+  let count: number | null;
 
-  count = await actor.updateLastNameByIds(
-    'Goldberg',
-    [-1, 0, -1, -1, 0]);
-
-  console.log('Trans update: ' + count);
-
-  count = await actor.updateFirstNameByIds(
+  count = await actorData.updateFirstNameByIds(
     'Parker',
     [-1, 0, -1, -1, 0]);
 

@@ -1,7 +1,7 @@
 import { Pool, QueryResult } from 'pg';
-import { ActorDto } from '../model/ActorDto'
+import { ActorDto } from '../dto/ActorDto'
 
-export class Actor {
+export class ActorData {
   #pool: Pool;
 
   constructor(pool: Pool) {
@@ -23,38 +23,11 @@ export class Actor {
       WHERE f.release_year = $1 AND a.last_name = $2
     `, [year, lastName]);
 
-    return Actor.mapActorResult(res);
-  }
-
-  async updateLastNameByIds(
-    lastName: string, ids: number[]): Promise<number> {
-    let count = 0;
-    const client = await this.#pool.connect();
-
-    try {
-      await client.query('BEGIN');
-
-      const result = await Promise.all(ids.map(id =>
-        client.query(`
-          UPDATE actor
-          SET last_name = $1
-          WHERE actor_id = $2
-        `, [lastName, id])));
-
-      await client.query('COMMIT');
-      count = result.map(r => r.rowCount).reduce((c, v) => c + v, count);
-    } catch (e) {
-      await client.query('ROLLBACK');
-      throw e;
-    } finally {
-      client.release();
-    }
-
-    return count;
+    return ActorData.mapActorResult(res);
   }
 
   async updateFirstNameByIds(
-    firstName: string, ids: number[]): Promise<number> {
+    firstName: string, ids: number[]): Promise<number | null> {
     const res = await this.#pool.query(`
       UPDATE actor
       SET first_name = $1
